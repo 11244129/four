@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員註冊</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .register-container {
+            background-color: white;
+            padding: 20px;
+            width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .success-message {
+            text-align: center;
+            color: green;
+            font-size: 16px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #007BFF;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .login-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-container">
+        <h2>會員註冊</h2>
+        <form id="registerForm">
+            <label for="name">顧客名稱</label>
+            <input type="text" id="name" name="name" required placeholder="請輸入顧客名稱">
+
+            <label for="email">電子信箱</label>
+            <input type="email" id="email" name="email" required placeholder="請輸入電子信箱">
+
+            <label for="password">密碼</label>
+            <input type="password" id="password" name="password" required placeholder="請輸入密碼">
+
+            <button type="submit">註冊</button>
+        </form>
+        <div class="success-message" id="successMessage">註冊成功！2秒後跳轉到登入頁面...</div>
+        <a href="login.html" class="login-link">已有帳號？點擊登入</a>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+
+            localStorage.setItem('user', JSON.stringify({ name, email, password }));
+
+
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+
+
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+        });
+    </script>
+
+</body>
+</html>

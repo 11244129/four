@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員登入</title>
+    <style>
+        body {
+            display: flex;
+            background-image: url('thanks.png');
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .login-container {
+            width: 300px;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .social-login-buttons {
+            margin-top: 20px;
+        }
+
+        .social-login-buttons button {
+            width: 90%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .social-login-buttons button:hover {
+            opacity: 0.8;
+        }
+
+        .separator {
+            border-top: 1px solid #ccc;
+            margin: 20px 0;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #007BFF;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .register-link:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>會員登入</h2>
+        <form id="loginForm">
+            <input type="email" id="email" name="email" placeholder="請輸入電子信箱" required>
+            <input type="password" id="password" name="password" placeholder="請輸入密碼" required>
+            <button type="submit">登入</button>
+        </form>
+        <div class="error-message" id="errorMessage">登入失敗，請檢查電子信箱和密碼。</div>
+
+        <div class="separator"></div> 
+
+        <div class="social-login-buttons">
+            <button class="google-button">以 Google 登入</button>
+            <button class="microsoft-button">以 Microsoft 登入</button>
+            <button class="apple-button">以 Apple 登入</button>
+        </div>
+
+        <a href="register.html" class="register-link">還沒有帳號？點擊註冊</a>
+        <a href="期末.html" class="back-link">返回商品頁面</a>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (user && user.email === email && user.password === password) {
+                alert('登入成功！');
+
+                const memberInfo = JSON.parse(localStorage.getItem('memberInfo')) || { name: "預設名稱", email: user.email };
+                localStorage.setItem("memberInfo", JSON.stringify(memberInfo));
+
+                sessionStorage.setItem("loggedIn", true);
+                window.location.href = '期末.html';
+            } else {
+                const errorMessage = document.getElementById('errorMessage');
+                errorMessage.style.display = 'block';
+            }
+        });
+
+        function logout() {
+            sessionStorage.clear(); 
+            alert("已成功登出！");
+            window.location.href = "login.html";
+        }
+    </script>
+
+</body>
+</html>

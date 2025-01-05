@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>購物車</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('shop.png');
+            margin: 0;
+            padding: 20px;
+        }
+        .cart-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .cart-container h3 {
+            margin-bottom: 20px;
+        }
+        .cart-container ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .cart-container ul li {
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-container ul li input {
+            width: 50px;
+            text-align: center;
+            margin-right: 10px;
+        }
+        .cart-container ul li button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .cart-container ul li button:hover {
+            background-color: #d32f2f;
+        }
+        .cart-total {
+            text-align: right;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .checkout-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #82d7e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .checkout-btn:hover {
+            background-color: #a1c6a3;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!sessionStorage.getItem("loggedIn")) {
+                alert("請先登入！");
+                window.location.href = "login.html";
+                return;
+            }
+
+            const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+            const cartList = document.getElementById('cart-list');
+            const cartTotal = document.getElementById('cart-total');
+
+            let total = 0;
+            cartList.innerHTML = '';
+            cart.forEach((item, index) => {
+                total += item.price * item.quantity;
+                cartList.innerHTML += `
+                    <li>
+                        ${item.name} 
+                        <input type="number" id="quantity-${index}" value="${item.quantity}" min="1">
+                        <span>NT$${item.price * item.quantity}</span>
+                        <button onclick="updateQuantity(${index})">更新</button>
+                        <button onclick="removeFromCart(${index})">移除</button>
+                    </li>`;
+            });
+
+            cartTotal.textContent = total.toString();
+        });
+
+        function updateQuantity(index) {
+            const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+            const newQuantity = parseInt(document.getElementById(`quantity-${index}`).value);
+
+            if (newQuantity > 0) {
+                cart[index].quantity = newQuantity;
+                sessionStorage.setItem('cart', JSON.stringify(cart));
+                location.reload();
+            } else {
+                alert('數量必須大於 0');
+            }
+        }
+
+        function removeFromCart(index) {
+            const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+            cart.splice(index, 1);
+            sessionStorage.setItem('cart', JSON.stringify(cart));
+            location.reload();
+        }
+
+        function checkoutCart() {
+            const cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+            if (cart.length === 0) {
+                alert('購物車是空的！');
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            alert(`感謝您的購物！總金額: NT$${total}`);
+
+            const purchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
+            const currentPurchase = {
+                items: cart.map(item => ({ ...item, rating: null, comment: null })),
+                time: new Date().toLocaleString()
+            };
+            purchaseHistory.push(currentPurchase);
+            localStorage.setItem('purchaseHistory', JSON.stringify(purchaseHistory));
+
+            sessionStorage.removeItem('cart');
+            location.reload(); 
+        }
+
+    </script>
+</head>
+<body>
+    <div class="cart-container">
+        <h3>您的購物車</h3>
+        <ul id="cart-list"></ul>
+        <div class="cart-total">總金額: NT$<span id="cart-total">0</span></div>
+        <button class="checkout-btn" onclick="checkoutCart()">結帳</button>
+        <button class="back-to-products" onclick="window.location.href='期末.html'" style="margin-top: 20px; padding: 10px 20px; background-color: #b2d68b; color: white; border: none; border-radius: 5px; cursor: pointer;">返回商品頁面</button>
+    </div>
+</body>
+</html>
